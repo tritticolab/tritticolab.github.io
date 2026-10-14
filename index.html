@@ -4,231 +4,378 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrioChef - Svuota il frigo, riempi il piatto</title>
+    <!-- Importazione font moderno -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
+        /* ==========================================================================
+           TEMA (Facilmente adattabile per future app come Warp Scanner)
+           ========================================================================== */
         :root {
-            --primary: #1C3F3A; /* Il verde scuro caratteristico */
-            --secondary: #D4A373; /* Il colore accento sabbia/legno */
-            --background: #FDFBF7; /* Crema chiaro per il fondo */
-            --text-dark: #2D2D2D;
-            --text-light: #FDFBF7;
+            --primary-color: #1C3F3A; /* Verde scuro TrioChef */
+            --secondary-color: #D4A373; /* Sabbia/Legno */
+            --bg-color: #F8F9FA;
+            --text-dark: #1A1A1A;
+            --text-light: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --shadow: 0 12px 24px rgba(0,0,0,0.06);
+            --radius: 16px;
         }
 
+        /* Reset di base */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--background);
+            background-color: var(--bg-color);
             color: var(--text-dark);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Header */
+        /* ==========================================================================
+           GESTIONE LINGUE (CSS)
+           ========================================================================== */
+        body[data-lang="it"] .lang-en { display: none !important; }
+        body[data-lang="en"] .lang-it { display: none !important; }
+
+        /* ==========================================================================
+           HEADER & NAVIGAZIONE
+           ========================================================================== */
         header {
-            background-color: var(--primary);
-            color: var(--text-light);
+            background-color: var(--primary-color);
             padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 1px;
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            color: var(--text-light);
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
         }
 
-        /* Hero Section */
+        /* Il tuo screenshot trasformato in icona app */
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Switch Lingua */
+        .lang-switch {
+            background: rgba(255,255,255,0.1);
+            padding: 4px;
+            border-radius: 30px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--secondary-color);
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* ==========================================================================
+           HERO SECTION
+           ========================================================================== */
         .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2A5A53 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 5rem 5% 8rem 5%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            padding: 4rem 5% 6rem 5%;
-            background: linear-gradient(to bottom, var(--primary) 0%, #2A5A53 100%);
-            color: var(--text-light);
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
             margin-bottom: 1.5rem;
-            line-height: 1.2;
-            max-width: 800px;
+            max-width: 900px;
+            letter-spacing: -1px;
         }
 
         .hero p {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
+            opacity: 0.9;
             max-width: 600px;
             margin-bottom: 2.5rem;
-            opacity: 0.9;
         }
 
-        .cta-button {
-            display: inline-block;
-            background-color: var(--secondary);
+        .cta-btn {
+            background-color: var(--secondary-color);
             color: var(--text-dark);
-            padding: 1rem 2.5rem;
-            border-radius: 30px;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .cta-button:hover {
-            transform: translateY(-2px);
-            background-color: #E2B78D;
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 163, 115, 0.4);
         }
 
-        /* Video Section */
-        .video-container {
-            width: 100%;
+        /* ==========================================================================
+           VIDEO SECTION
+           ========================================================================== */
+        .video-wrapper {
             max-width: 900px;
-            margin: -4rem auto 4rem auto; /* Overlap scenografico sull'hero */
-            border-radius: 20px;
+            margin: -5rem auto 4rem auto;
+            padding: 0 5%;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+            height: 0;
             overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             background-color: #000;
-            aspect-ratio: 16 / 9;
+            border: 4px solid var(--card-bg);
         }
 
         .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        /* Features Section */
+        /* ==========================================================================
+           FEATURES (VETRINA APP)
+           ========================================================================== */
         .features {
-            padding: 2rem 5% 5rem 5%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 5rem auto;
+            padding: 0 5%;
         }
 
         .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2.5rem;
             text-align: center;
-            padding: 2.5rem 2rem;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
             transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+        }
+
+        /* Screenshot dentro le card */
+        .feature-screenshot {
+            width: auto;
+            max-width: 100%;
+            height: 350px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
         }
 
         .feature-card h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: var(--primary);
-            font-size: 1.4rem;
+            font-weight: 800;
         }
 
-        /* Footer */
+        /* ==========================================================================
+           FOOTER
+           ========================================================================== */
         footer {
-            background-color: var(--primary);
+            background-color: var(--primary-color);
             color: var(--text-light);
             text-align: center;
-            padding: 3rem 5%;
-            margin-top: 2rem;
+            padding: 4rem 5% 2rem 5%;
         }
 
         .footer-links {
-            margin-top: 1.5rem;
             display: flex;
             justify-content: center;
             gap: 2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .footer-links a {
-            color: var(--secondary);
+            color: var(--secondary-color);
             text-decoration: none;
-            font-size: 1rem;
+            font-weight: 600;
+            transition: opacity 0.2s;
         }
 
         .footer-links a:hover {
+            opacity: 0.8;
             text-decoration: underline;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            .hero p {
-                font-size: 1.1rem;
-            }
-            .video-container {
-                margin-top: -2rem;
-                width: 90%;
-            }
+        
+        .footer-copy {
+            opacity: 0.6;
+            font-size: 0.9rem;
         }
     </style>
 </head>
-<body>
+<body data-lang="it">
 
+    <!-- HEADER / NAV -->
     <header>
-        <div class="logo">🍳 TrioChef</div>
+        <div class="logo-container">
+            <img src="Screenshot_20261007_192747_TrioChef.jpg" alt="TrioChef Logo" class="app-icon">
+            TrioChef
+        </div>
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="setLanguage('it')" id="btn-it">IT</button>
+            <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+        </div>
     </header>
 
+    <!-- HERO SECTION -->
     <section class="hero">
-        <h1>Svuota il frigo, riempi il piatto.</h1>
-        <p>Inserisci gli ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.</p>
-        <a href="LINK_AL_TUO_PLAY_STORE" class="cta-button" target="_blank">Scarica da Google Play</a>
+        <!-- Titoli -->
+        <h1 class="lang-it">Svuota il frigo,<br>riempi il piatto.</h1>
+        <h1 class="lang-en">Empty your fridge,<br>fill your plate.</h1>
+        
+        <!-- Sottotitoli -->
+        <p class="lang-it">Inserisci gli ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.</p>
+        <p class="lang-en">Enter the ingredients you have at home. TrioChef creates the perfect custom recipe for you, with zero waste and in seconds.</p>
+        
+        <!-- Pulsante Download -->
+        <a href="https://play.google.com/store/apps/details?id=com.triochef.app" class="cta-btn" target="_blank">
+            <span class="lang-it">Scarica da Google Play</span>
+            <span class="lang-en">Download on Google Play</span>
+        </a>
     </section>
 
-    <!-- INSERISCI QUI IL LINK DEL TUO VIDEO YOUTUBE NEL SRC DELL'IFRAME -->
-    <div class="video-container">
-        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; background: #333; font-size: 1.2rem;">
-            https://youtu.be/9jtb9HUG3mI?si=X7Uim8HuGsM9WXR9
+    <!-- VIDEO PROMOZIONALE -->
+    <div class="video-wrapper">
+        <div class="video-container">
+            <!-- Il javascript cambierà il link a seconda della lingua -->
+            <iframe id="promo-video" src="https://www.youtube.com/embed/9jtb9HUG3mI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        
-        <!-- Usa questo formato per il video reale: -->
-        <!-- <iframe src="https://www.youtube.com/embed/9jtb9HUG3mI" allowfullscreen></iframe> -->
     </div>
 
+    <!-- FEATURES -->
     <section class="features">
+        <!-- Card 1: Sprechi -->
         <div class="feature-card">
             <div class="feature-icon">🥬</div>
-            <h3>Zero Sprechi</h3>
-            <p>Non sai cosa cucinare con quel che resta in dispensa? Dicci cosa hai, TrioChef elabora il piatto perfetto per non buttare via nulla.</p>
+            <h3 class="lang-it">Zero Sprechi</h3>
+            <h3 class="lang-en">Zero Waste</h3>
+            <p class="lang-it">Non sai cosa cucinare con quel che resta in dispensa? Dicci cosa hai, TrioChef elabora il piatto perfetto per non buttare via nulla.</p>
+            <p class="lang-en">Don't know what to cook with what's left in the pantry? Tell us what you have, TrioChef crafts the perfect dish so nothing goes to waste.</p>
         </div>
+        
+        <!-- Card 2: Adatta (Con Screenshot) -->
         <div class="feature-card">
-            <div class="feature-icon">🔄</div>
-            <h3>Adatta la Ricetta</h3>
-            <p>Ti manca un ingrediente all'ultimo minuto? Nessun problema, TrioChef ricalcola istantaneamente i passaggi proponendoti valide alternative.</p>
+            <img src="Screenshot_20260921_223235_TrioChef.jpg" alt="Adatta la ricetta" class="feature-screenshot">
+            <h3 class="lang-it">Adatta la Ricetta</h3>
+            <h3 class="lang-en">Adapt the Recipe</h3>
+            <p class="lang-it">Ti manca un ingrediente all'ultimo minuto? Nessun problema, TrioChef ricalcola istantaneamente i passaggi proponendoti valide alternative.</p>
+            <p class="lang-en">Missing an ingredient at the last minute? No problem, TrioChef instantly recalculates the steps, offering you valid alternatives.</p>
         </div>
+        
+        <!-- Card 3: Multilingua (Con Screenshot) -->
         <div class="feature-card">
-            <div class="feature-icon">🌍</div>
-            <h3>Sempre con te, in due lingue</h3>
-            <p>Passa dall'Italiano all'Inglese con un semplice tocco. Le tue ricette salvate sono sempre disponibili nella lingua che preferisci.</p>
+            <img src="Screenshot_20260921_224913_TrioChef.jpg" alt="Due lingue" class="feature-screenshot">
+            <h3 class="lang-it">Sempre con te</h3>
+            <h3 class="lang-en">Always with you</h3>
+            <p class="lang-it">Passa dall'Italiano all'Inglese con un semplice tocco. Le tue ricette salvate sono sempre disponibili nella lingua che preferisci.</p>
+            <p class="lang-en">Switch from Italian to English with a simple tap. Your saved recipes are always available in your preferred language.</p>
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer>
-        <p>&copy; 2026 Trittico Lab. Tutti i diritti riservati.</p>
-        <div class="footer-links">
-            <!-- Aggiungerai qui i link reali ai file quando li caricherai su GitHub -->
-            <a href="Privacy.html">Privacy Policy</a>
-            <a href="mailto:tritticolab@gmail.com">Contattaci</a>
+        <div class="logo-container" style="justify-content: center; opacity: 0.8; margin-bottom: 1rem;">
+            <img src="Screenshot_20261007_192747_TrioChef.jpg" alt="TrioChef Logo" class="app-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+            TrioChef
         </div>
+        
+        <div class="footer-links">
+            <a href="https://tritticolab.github.io/Privacy.html">Privacy Policy</a>
+            <a href="mailto:tritticolab@gmail.com">
+                <span class="lang-it">Contattaci</span>
+                <span class="lang-en">Contact Us</span>
+            </a>
+        </div>
+        
+        <p class="footer-copy">
+            <span class="lang-it">&copy; 2026 Trittico Lab. Tutti i diritti riservati.</span>
+            <span class="lang-en">&copy; 2026 Trittico Lab. All rights reserved.</span>
+        </p>
     </footer>
 
+    <!-- SCRIPT GESTIONE LINGUA E VIDEO -->
+    <script>
+        // ID dei video YouTube
+        const videoIT = "https://www.youtube.com/embed/9jtb9HUG3mI";
+        const videoEN = "https://www.youtube.com/embed/MHUPQQOgyMw"; // Short link convertito in embed
+
+        function setLanguage(lang) {
+            // 1. Aggiorna lo stato del body per mostrare/nascondere i testi via CSS
+            document.body.setAttribute('data-lang', lang);
+            document.documentElement.lang = lang;
+            
+            // 2. Aggiorna l'evidenziazione dei pulsanti IT / EN
+            document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            // 3. Cambia il video di YouTube senza ricaricare la pagina
+            const videoPlayer = document.getElementById('promo-video');
+            if (lang === 'it') {
+                videoPlayer.src = videoIT;
+            } else {
+                videoPlayer.src = videoEN;
+            }
+        }
+    </script>
 </body>
 </html>
