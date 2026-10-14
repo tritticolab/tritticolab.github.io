@@ -1,845 +1,302 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrioChef - Svuota il frigo, riempi il piatto</title>
-    <meta name="description" content="Inserisci gli ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.">
-    <meta name="theme-color" content="#1C3F3A">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ==========================================================================
-           DESIGN SYSTEM & VARIABILI CSS (Pronto per riutilizzo su "Warp Scanner")
-           ========================================================================== */
-        :root {
-            /* --- TEMA ATTUALE: TRIOCHEF --- */
-            --brand-primary: #1C3F3A;        /* Verde bosco profondo */
-            --brand-primary-light: #2A5A53;  /* Verde secondario per gradienti */
-            --brand-primary-dark: #122926;   /* Verde scuro per footer/header */
-            --brand-accent: #D4A373;         /* Ocra / Legno caldo per CTA */
-            --brand-accent-hover: #E0B285;   /* Hover CTA */
-            --brand-accent-glow: rgba(212, 163, 115, 0.45);
-            
-            /* Superfici e Testi */
-            --bg-main: #F8F9FA;
-            --bg-surface: #FFFFFF;
-            --bg-subtle: #EEF2F1;
-            --text-main: #1A1A1A;
-            --text-muted: #5A6563;
-            --text-on-primary: #FFFFFF;
-            --text-on-accent: #1A1A1A;
-
-            /* Layout, Bordi e Ombre */
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --radius-sm: 12px;
-            --radius-md: 20px;
-            --radius-lg: 28px;
-            --radius-pill: 9999px;
-            --shadow-sm: 0 4px 12px rgba(28, 63, 58, 0.06);
-            --shadow-md: 0 14px 32px rgba(28, 63, 58, 0.09);
-            --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.18);
-            --border-subtle: 1px solid rgba(28, 63, 58, 0.08);
-            --container-max: 1180px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-
-            /* ----------------------------------------------------------------------
-               [PRESET FUTURO] TEMA: WARP SCANNER (Basta sostituire i valori sopra)
-               --brand-primary: #0F172A;
-               --brand-primary-light: #1E293B;
-               --brand-primary-dark: #090D16;
-               --brand-accent: #38BDF8;
-               --brand-accent-hover: #7DD3FC;
-               --brand-accent-glow: rgba(56, 189, 248, 0.45);
-               --bg-subtle: #E2E8F0;
-               ---------------------------------------------------------------------- */
-        }
-
-        /* Reset & Base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: var(--font-main);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        /* Gestione Bilingue Lato Client */
-        body[data-lang="it"] .lang-en { display: none !important; }
-        body[data-lang="en"] .lang-it { display: none !important; }
-
-        /* ==========================================================================
-           HEADER STICKY CON GLASSMORPHISM
-           ========================================================================== */
-        header {
-            background-color: rgba(28, 63, 58, 0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 0.9rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .header-inner {
-            width: 100%;
-            max-width: var(--container-max);
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-on-primary);
-            font-weight: 800;
-            font-size: 1.4rem;
-            letter-spacing: -0.5px;
-            text-decoration: none;
-        }
-
-        .app-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .lang-switch {
-            background: rgba(0, 0, 0, 0.25);
-            padding: 4px;
-            border-radius: var(--radius-pill);
-            display: flex;
-            gap: 2px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 6px 14px;
-            border-radius: var(--radius-pill);
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .lang-btn:hover {
-            color: var(--text-on-primary);
-        }
-
-        .lang-btn.active {
-            background: var(--brand-accent);
-            color: var(--text-on-accent);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ==========================================================================
-           HERO SECTION
-           ========================================================================== */
-        .hero {
-            background: radial-gradient(circle at 50% 0%, var(--brand-primary-light) 0%, var(--brand-primary) 75%);
-            color: var(--text-on-primary);
-            text-align: center;
-            padding: 4.5rem 5% 8.5rem 5%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: var(--brand-accent);
-            padding: 6px 16px;
-            border-radius: var(--radius-pill);
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.6rem, 5.5vw, 4.3rem);
-            font-weight: 800;
-            line-height: 1.08;
-            margin-bottom: 1.4rem;
-            max-width: 850px;
-            letter-spacing: -1.5px;
-        }
-
-        .hero p {
-            font-size: clamp(1.1rem, 2vw, 1.3rem);
-            color: rgba(255, 255, 255, 0.88);
-            max-width: 620px;
-            margin-bottom: 2.5rem;
-            font-weight: 400;
-        }
-
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background-color: var(--brand-accent);
-            color: var(--text-on-accent);
-            text-decoration: none;
-            padding: 16px 36px;
-            border-radius: var(--radius-pill);
-            font-weight: 800;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .cta-btn:hover {
-            background-color: var(--brand-accent-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px var(--brand-accent-glow);
-        }
-
-        .cta-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-            flex-shrink: 0;
-        }
-
-        .hero-subnote {
-            margin-top: 1rem;
-            font-size: 0.85rem;
-            opacity: 0.65;
-        }
-
-        /* ==========================================================================
-           VIDEO SHOWCASE (Supporto Dinamico 16:9 e 9:16 per YouTube Short)
-           ========================================================================== */
-        .video-wrapper {
-            max-width: 880px;
-            margin: -5.5rem auto 4.5rem auto;
-            padding: 0 5%;
-            position: relative;
-            z-index: 10;
-            transition: max-width 0.4s ease;
-        }
-
-        /* Quando è attivo il video EN (Short verticale), stringe il wrapper in stile smartphone */
-        .video-wrapper.is-vertical {
-            max-width: 390px;
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            background-color: #000;
-            border: 6px solid var(--bg-surface);
-            transition: aspect-ratio 0.4s ease;
-        }
-
-        .video-wrapper.is-vertical .video-container {
-            aspect-ratio: 9 / 16;
-            border-radius: var(--radius-lg);
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* ==========================================================================
-           COME FUNZIONA (3 STEP RAPIDI)
-           ========================================================================== */
-        .steps-section {
-            max-width: var(--container-max);
-            margin: 0 auto 4.5rem auto;
-            padding: 0 5%;
-            text-align: center;
-        }
-
-        .section-header {
-            margin-bottom: 2.8rem;
-            text-align: center;
-        }
-
-        .section-header h2 {
-            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-            color: var(--brand-primary);
-            font-weight: 800;
-            letter-spacing: -0.8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .step-item {
-            background: var(--bg-subtle);
-            border-radius: var(--radius-md);
-            padding: 1.8rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: var(--border-subtle);
-        }
-
-        .step-number {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--brand-primary);
-            color: var(--brand-accent);
-            font-weight: 800;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        .step-item h4 {
-            font-size: 1.15rem;
-            color: var(--brand-primary);
-            margin-bottom: 0.4rem;
-            font-weight: 700;
-        }
-
-        .step-item p {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-
-        /* ==========================================================================
-           FEATURES GRID (Con altezze visive bilanciate)
-           ========================================================================== */
-        .features-section {
-            max-width: var(--container-max);
-            margin: 0 auto 5.5rem auto;
-            padding: 0 5%;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-            gap: 2rem;
-            align-items: stretch;
-        }
-
-        .feature-card {
-            background: var(--bg-surface);
-            border-radius: var(--radius-md);
-            padding: 2.2rem 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            border: var(--border-subtle);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(28, 63, 58, 0.13);
-        }
-
-        /* Box visuale unificato (340px) per garantire allineamento perfetto dei titoli */
-        .feature-visual {
-            width: 100%;
-            height: 340px;
-            margin-bottom: 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-subtle);
-            border-radius: var(--radius-sm);
-            padding: 1rem;
-            overflow: hidden;
-        }
-
-        .feature-screenshot {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 14px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            border: 3px solid #1A1A1A;
-        }
-
-        /* Illustrazione CSS Custom per la Card 1 ("Zero Sprechi") */
-        .zero-waste-graphic {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            width: 100%;
-            max-width: 240px;
-        }
-
-        .ingredient-pill {
-            background: var(--bg-surface);
-            padding: 10px 16px;
-            border-radius: var(--radius-pill);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--brand-primary);
-            border: var(--border-subtle);
-        }
-
-        .ingredient-pill span.check {
-            margin-left: auto;
-            background: rgba(28, 63, 58, 0.1);
-            color: var(--brand-primary);
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-        }
-
-        .recipe-result-badge {
-            margin-top: 6px;
-            background: var(--brand-primary);
-            color: var(--text-on-primary);
-            padding: 12px 20px;
-            border-radius: var(--radius-sm);
-            font-weight: 800;
-            font-size: 0.95rem;
-            width: 100%;
-            box-shadow: 0 8px 18px rgba(28, 63, 58, 0.22);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .feature-card h3 {
-            color: var(--brand-primary);
-            font-size: 1.45rem;
-            margin-bottom: 0.8rem;
-            font-weight: 800;
-            letter-spacing: -0.4px;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
-
-        /* ==========================================================================
-           BOTTOM CTA BANNER
-           ========================================================================== */
-        .bottom-cta {
-            max-width: var(--container-max);
-            margin: 0 auto 5rem auto;
-            padding: 0 5%;
-        }
-
-        .bottom-cta-box {
-            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-light) 100%);
-            border-radius: var(--radius-lg);
-            padding: 3.5rem 2rem;
-            text-align: center;
-            color: var(--text-on-primary);
-            box-shadow: var(--shadow-md);
-        }
-
-        .bottom-cta-box h2 {
-            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            letter-spacing: -0.5px;
-        }
-
-        .bottom-cta-box p {
-            opacity: 0.9;
-            max-width: 540px;
-            margin: 0 auto 2rem auto;
-            font-size: 1.1rem;
-        }
-
-        /* ==========================================================================
-           FOOTER
-           ========================================================================== */
-        footer {
-            background-color: var(--brand-primary-dark);
-            color: var(--text-on-primary);
-            text-align: center;
-            padding: 3.5rem 5% 2.5rem 5%;
-        }
-
-        .footer-logo {
-            justify-content: center;
-            opacity: 0.9;
-            margin-bottom: 1.2rem;
-            font-size: 1.25rem;
-        }
-
-        .footer-logo .app-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 1.8rem;
-        }
-
-        .footer-links a {
-            color: var(--brand-accent);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: opacity 0.2s;
-        }
-
-        .footer-links a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-
-        .footer-copy {
-            opacity: 0.55;
-            font-size: 0.85rem;
-        }
-
-        /* Responsive Tweaks */
-        @media (max-width: 640px) {
-            .hero {
-                padding: 3.5rem 5% 7rem 5%;
-            }
-            .cta-btn {
-                width: 100%;
-                max-width: 320px;
-                padding: 15px 24px;
-            }
-            .feature-visual {
-                height: 300px;
-            }
-        }
-    </style>
-</head>
-<body data-lang="it">
-
-    <!-- HEADER -->
-    <header>
-        <div class="header-inner">
-            <a href="#" class="logo-container">
-                <img src="Screenshot_20261007_192747_TrioChef.jpg" alt="TrioChef Logo" class="app-icon">
-                <span>TrioChef</span>
-            </a>
-            <div class="header-actions">
-                <div class="lang-switch" role="group" aria-label="Language selector">
-                    <button class="lang-btn active" onclick="setLanguage('it')" id="btn-it" type="button">IT</button>
-                    <button class="lang-btn" onclick="setLanguage('en')" id="btn-en" type="button">EN</button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <!-- HERO SECTION -->
-        <section class="hero">
-            <div class="hero-badge">
-                <span>✨</span>
-                <span class="lang-it">Zero Sprechi in Cucina</span>
-                <span class="lang-en">Zero Waste Kitchen</span>
-            </div>
-
-            <h1 class="lang-it">Svuota il frigo,<br>riempi il piatto.</h1>
-            <h1 class="lang-en">Empty your fridge,<br>fill your plate.</h1>
-
-            <p class="lang-it">Inserisci gli ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.</p>
-            <p class="lang-en">Enter the ingredients you have at home. TrioChef creates the perfect custom recipe for you, with zero waste and in seconds.</p>
-
-            <a href="https://play.google.com/store/apps/details?id=com.triochef.app" class="cta-btn" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
-                </svg>
-                <span class="lang-it">Scarica da Google Play</span>
-                <span class="lang-en">Download on Google Play</span>
-            </a>
-
-            <span class="hero-subnote lang-it">Disponibile gratis per dispositivi Android</span>
-            <span class="hero-subnote lang-en">Available for free on Android devices</span>
-        </section>
-
-        <!-- VIDEO SHOWCASE -->
-        <div class="video-wrapper" id="video-wrapper">
-            <div class="video-container">
-                <iframe 
-                    id="promo-video" 
-                    src="https://www.youtube.com/embed/9jtb9HUG3mI" 
-                    title="TrioChef Video Presentazione"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-
-        <!-- COME FUNZIONA (3 STEP) -->
-        <section class="steps-section">
-            <div class="section-header">
-                <h2 class="lang-it">Dal frigo alla tavola in 3 mosse</h2>
-                <h2 class="lang-en">From fridge to table in 3 steps</h2>
-                <p class="lang-it">Pratico, veloce e pensato per la tua spesa quotidiana.</p>
-                <p class="lang-en">Practical, fast, and designed for your everyday groceries.</p>
-            </div>
-
-            <div class="steps-grid">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <h4 class="lang-it">Apri la dispensa</h4>
-                    <h4 class="lang-en">Check your pantry</h4>
-                    <p class="lang-it">Seleziona gli ingredienti che hai già in casa e che vuoi consumare.</p>
-                    <p class="lang-en">Select the ingredients you already have at home and want to use up.</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <h4 class="lang-it">Personalizza il piatto</h4>
-                    <h4 class="lang-en">Customize the dish</h4>
-                    <p class="lang-it">Ricevi una ricetta su misura o sostituisci al volo ciò che ti manca.</p>
-                    <p class="lang-en">Get a tailored recipe or swap out missing ingredients on the fly.</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <h4 class="lang-it">Mettiti ai fornelli</h4>
-                    <h4 class="lang-en">Start cooking</h4>
-                    <p class="lang-it">Segui i passaggi chiari e salva le tue creazioni preferite.</p>
-                    <p class="lang-en">Follow the clear steps and save your favorite culinary creations.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- FEATURES PRINCIPALI -->
-        <section class="features-section">
-            <div class="section-header">
-                <h2 class="lang-it">Perché scegliere TrioChef</h2>
-                <h2 class="lang-en">Why choose TrioChef</h2>
-                <p class="lang-it">Tutto ciò che ti serve per cucinare con creatività senza buttare nulla.</p>
-                <p class="lang-en">Everything you need to cook creatively without throwing anything away.</p>
-            </div>
-
-            <div class="features">
-                <!-- Feature 1: Zero Sprechi -->
-                <div class="feature-card">
-                    <div class="feature-visual">
-                        <div class="zero-waste-graphic" aria-hidden="true">
-                            <div class="ingredient-pill">
-                                <span>🥬</span>
-                                <span class="lang-it">Zucchine &amp; Erbe</span>
-                                <span class="lang-en">Zucchini &amp; Herbs</span>
-                                <span class="check">✓</span>
-                            </div>
-                            <div class="ingredient-pill">
-                                <span>🧀</span>
-                                <span class="lang-it">Formaggio in frigo</span>
-                                <span class="lang-en">Leftover Cheese</span>
-                                <span class="check">✓</span>
-                            </div>
-                            <div class="ingredient-pill">
-                                <span>🥚</span>
-                                <span class="lang-it">2 Uova fresche</span>
-                                <span class="lang-en">2 Fresh Eggs</span>
-                                <span class="check">✓</span>
-                            </div>
-                            <div class="recipe-result-badge">
-                                <span>🍲</span>
-                                <span class="lang-it">Ricetta Pronta!</span>
-                                <span class="lang-en">Recipe Ready!</span>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 class="lang-it">Zero Sprechi</h3>
-                    <h3 class="lang-en">Zero Waste</h3>
-                    <p class="lang-it">Non sai cosa cucinare con quel che resta in dispensa? Dicci cosa hai, TrioChef elabora il piatto perfetto per non buttare via nulla.</p>
-                    <p class="lang-en">Don't know what to cook with what's left in the pantry? Tell us what you have, TrioChef crafts the perfect dish so nothing goes to waste.</p>
-                </div>
-
-                <!-- Feature 2: Adatta la Ricetta -->
-                <div class="feature-card">
-                    <div class="feature-visual">
-                        <img src="Screenshot_20260921_223235_TrioChef.jpg" alt="Funzione Adatta la ricetta su TrioChef" class="feature-screenshot" loading="lazy">
-                    </div>
-                    <h3 class="lang-it">Adatta la Ricetta</h3>
-                    <h3 class="lang-en">Adapt the Recipe</h3>
-                    <p class="lang-it">Ti manca un ingrediente all'ultimo minuto? Nessun problema, TrioChef ricalcola istantaneamente i passaggi proponendoti valide alternative.</p>
-                    <p class="lang-en">Missing an ingredient at the last minute? No problem, TrioChef instantly recalculates the steps, offering you valid alternatives.</p>
-                </div>
-
-                <!-- Feature 3: Multilingua -->
-                <div class="feature-card">
-                    <div class="feature-visual">
-                        <img src="Screenshot_20260921_224913_TrioChef.jpg" alt="Funzione Multilingua Italiano e Inglese su TrioChef" class="feature-screenshot" loading="lazy">
-                    </div>
-                    <h3 class="lang-it">Sempre con te</h3>
-                    <h3 class="lang-en">Always with you</h3>
-                    <p class="lang-it">Passa dall'Italiano all'Inglese con un semplice tocco. Le tue ricette salvate sono sempre disponibili nella lingua che preferisci.</p>
-                    <p class="lang-en">Switch from Italian to English with a simple tap. Your saved recipes are always available in your preferred language.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- BANNER CTA FINALE -->
-        <section class="bottom-cta">
-            <div class="bottom-cta-box">
-                <h2 class="lang-it">Pronto a dare nuova vita al tuo frigo?</h2>
-                <h2 class="lang-en">Ready to give your fridge a new life?</h2>
-                <p class="lang-it">Scarica subito TrioChef su Google Play e trasforma gli ingredienti di ogni giorno in piatti sorprendenti.</p>
-                <p class="lang-en">Download TrioChef now on Google Play and turn everyday ingredients into surprising dishes.</p>
-                <a href="https://play.google.com/store/apps/details?id=com.triochef.app" class="cta-btn" target="_blank" rel="noopener noreferrer">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
-                    </svg>
-                    <span class="lang-it">Prova TrioChef Gratis</span>
-                    <span class="lang-en">Try TrioChef for Free</span>
-                </a>
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="logo-container footer-logo">
-            <img src="Screenshot_20261007_192747_TrioChef.jpg" alt="TrioChef Logo" class="app-icon">
-            <span>TrioChef</span>
-        </div>
-        <div class="footer-links">
-            <a href="https://tritticolab.github.io/Privacy.html">Privacy Policy</a>
-            <a href="mailto:tritticolab@gmail.com">
-                <span class="lang-it">Contattaci</span>
-                <span class="lang-en">Contact Us</span>
-            </a>
-        </div>
-        <p class="footer-copy">
-            <span class="lang-it">&copy; 2026 Trittico Lab. Tutti i diritti riservati.</span>
-            <span class="lang-en">&copy; 2026 Trittico Lab. All rights reserved.</span>
-        </p>
-    </footer>
-
-    <!-- LOGICA JAVASCRIPT -->
-    <script>
-        const CONFIG = {
-            it: {
-                videoUrl: "https://www.youtube.com/embed/9jtb9HUG3mI",
-                isVerticalVideo: false,
-                pageTitle: "TrioChef - Svuota il frigo, riempi il piatto"
-            },
-            en: {
-                videoUrl: "https://www.youtube.com/embed/MHUPQQOgyMw",
-                isVerticalVideo: true, // Gestisce lo Short inglese in formato 9:16
-                pageTitle: "TrioChef - Empty your fridge, fill your plate"
-            }
-        };
-
-        function setLanguage(lang) {
-            const currentConfig = CONFIG[lang] || CONFIG.it;
-
-            // Aggiorna attributi lingua e titolo SEO
-            document.body.setAttribute('data-lang', lang);
-            document.documentElement.lang = lang;
-            document.title = currentConfig.pageTitle;
-
-            // Aggiorna stato bottoni
-            document.getElementById('btn-it').classList.toggle('active', lang === 'it');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-
-            // Aggiorna il player YouTube e adatta il formato (16:9 vs 9:16 Short)
-            const videoPlayer = document.getElementById('promo-video');
-            const videoWrapper = document.getElementById('video-wrapper');
-            
-            if (videoPlayer.src !== currentConfig.videoUrl) {
-                videoPlayer.src = currentConfig.videoUrl;
-            }
-            videoWrapper.classList.toggle('is-vertical', currentConfig.isVerticalVideo);
-
-            // Salva preferenza utente
-            try {
-                localStorage.setItem('triochef_lang', lang);
-            } catch (e) {}
-        }
-
-        // Inizializzazione automatica della lingua al caricamento
-        (function initLanguage() {
-            let savedLang = null;
-            try {
-                savedLang = localStorage.getItem('triochef_lang');
-            } catch (e) {}
-
-            if (savedLang === 'it' || savedLang === 'en') {
-                setLanguage(savedLang);
-            } else {
-                const browserLang = (navigator.language || navigator.userLanguage || 'it').toLowerCase();
-                setLanguage(browserLang.startsWith('it') ? 'it' : 'en');
-            }
-        })();
-    </script>
-</body>
-</html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrioChef - Svuota il frigo, riempi il piatto</title>
+<meta name="description" content="Inserisci gli ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.">
+<meta name="theme-color" content="#1C3F3A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   DESIGN SYSTEM & VARIABILI CSS (Pronto per riutilizzo su "Warp Scanner")
+   ========================================================================== */
+:root {
+--brand-primary: #1C3F3A;
+--brand-primary-light: #2A5A53;
+--brand-primary-dark: #122926;
+--brand-accent: #D4A373;
+--brand-accent-hover: #E0B285;
+--brand-accent-glow: rgba(212, 163, 115, 0.45);
+--bg-main: #F8F9FA;
+--bg-surface: #FFFFFF;
+--bg-subtle: #EEF2F1;
+--text-main: #1A1A1A;
+--text-muted: #5A6563;
+--text-on-primary: #FFFFFF;
+--text-on-accent: #1A1A1A;
+--font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+--radius-sm: 12px;
+--radius-md: 20px;
+--radius-lg: 28px;
+--radius-pill: 9999px;
+--shadow-sm: 0 4px 12px rgba(28, 63, 58, 0.06);
+--shadow-md: 0 14px 32px rgba(28, 63, 58, 0.09);
+--shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.18);
+--border-subtle: 1px solid rgba(28, 63, 58, 0.08);
+--container-max: 1180px;
+--transition: all 0.3s ease;
+}
+
+/* Reset & Base */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: var(--font-main);
+}
+
+html {
+scroll-behavior: smooth;
+}
+
+body {
+background-color: var(--bg-main);
+color: var(--text-main);
+line-height: 1.6;
+-webkit-font-smoothing: antialiased;
+overflow-x: hidden;
+}
+
+/* Gestione Bilingue Lato Client */
+body[data-lang="it"] .lang-en { display: none !important; }
+body[data-lang="en"] .lang-it { display: none !important; }
+
+/* Header Sticky */
+header {
+background-color: var(--brand-primary);
+padding: 0.9rem 5%;
+position: sticky;
+top: 0;
+z-index: 1000;
+border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.header-inner {
+width: 100%;
+max-width: var(--container-max);
+margin: 0 auto;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.logo-container {
+display: flex;
+align-items: center;
+gap: 12px;
+color: var(--text-on-primary);
+font-weight: 800;
+font-size: 1.4rem;
+letter-spacing: -0.5px;
+text-decoration: none;
+}
+
+.app-icon {
+width: 44px;
+height: 44px;
+border-radius: var(--radius-sm);
+object-fit: cover;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.lang-switch {
+background: rgba(0, 0, 0, 0.25);
+padding: 4px;
+border-radius: var(--radius-pill);
+display: flex;
+gap: 2px;
+border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lang-btn {
+background: transparent;
+border: none;
+color: rgba(255, 255, 255, 0.7);
+padding: 6px 14px;
+border-radius: var(--radius-pill);
+font-weight: 700;
+font-size: 0.85rem;
+cursor: pointer;
+transition: var(--transition);
+}
+
+.lang-btn:hover {
+color: var(--text-on-primary);
+}
+
+.lang-btn.active {
+background: var(--brand-accent);
+color: var(--text-on-accent);
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Section */
+.hero {
+background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-light) 100%);
+color: var(--text-on-primary);
+text-align: center;
+padding: 4.5rem 5% 8.5rem 5%;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.hero-badge {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.18);
+color: var(--brand-accent);
+padding: 6px 16px;
+border-radius: var(--radius-pill);
+font-size: 0.85rem;
+font-weight: 700;
+letter-spacing: 0.3px;
+text-transform: uppercase;
+margin-bottom: 1.5rem;
+}
+
+.hero h1 {
+font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+font-weight: 800;
+line-height: 1.1;
+margin-bottom: 1.4rem;
+max-width: 850px;
+letter-spacing: -1.2px;
+}
+
+.hero p {
+font-size: clamp(1.1rem, 2vw, 1.25rem);
+color: rgba(255, 255, 255, 0.9);
+max-width: 620px;
+margin-bottom: 2.5rem;
+}
+
+.cta-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+background-color: var(--brand-accent);
+color: var(--text-on-accent);
+text-decoration: none;
+padding: 16px 36px;
+border-radius: var(--radius-pill);
+font-weight: 800;
+font-size: 1.1rem;
+transition: var(--transition);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cta-btn:hover {
+background-color: var(--brand-accent-hover);
+transform: translateY(-3px);
+box-shadow: 0 12px 28px var(--brand-accent-glow);
+}
+
+.cta-btn svg {
+width: 22px;
+height: 22px;
+fill: currentColor;
+flex-shrink: 0;
+}
+
+.hero-subnote {
+margin-top: 1rem;
+font-size: 0.85rem;
+opacity: 0.7;
+}
+
+/* Video Showcase (Supporto 16:9 per IT e 9:16 per Short EN) */
+.video-wrapper {
+max-width: 880px;
+margin: -5.5rem auto 4.5rem auto;
+padding: 0 5%;
+position: relative;
+z-index: 10;
+transition: max-width 0.35s ease;
+}
+
+.video-wrapper.is-vertical {
+max-width: 380px;
+}
+
+.video-container {
+position: relative;
+width: 100%;
+padding-bottom: 56.25%;
+height: 0;
+overflow: hidden;
+border-radius: var(--radius-md);
+box-shadow: var(--shadow-lg);
+background-color: #000;
+border: 6px solid var(--bg-surface);
+transition: padding-bottom 0.35s ease;
+}
+
+.video-wrapper.is-vertical .video-container {
+padding-bottom: 177.77%;
+border-radius: var(--radius-lg);
+}
+
+.video-container iframe {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+border: none;
+}
+
+/* Come Funziona (3 Step) */
+.steps-section {
+max-width: var(--container-max);
+margin: 0 auto 4.5rem auto;
+padding: 0 5%;
+text-align: center;
+}
+
+.section-header {
+margin-bottom: 2.8rem;
+text-align: center;
+}
+
+.section-header h2 {
+font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+color: var(--brand-primary);
+font-weight: 800;
+letter-spacing: -0.8px;
+margin-bottom: 0.5rem;
+}
+
+.section-header p {
+color: var(--text-muted);
+font-size: 1.1rem;
+}
+
+.steps-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1.5rem;
+}
+
+.step-item {
+background: var(--bg-subtle);
+border-radius: var(--radius-md);
+padding: 1.8rem 1.5rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+border: var(--border-subtle);
+}
+
+.step-number {
+width: 38px;
+height: 38px;
+border-
