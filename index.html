@@ -1123,4 +1123,67 @@
                 const themeMeta = document.getElementById("meta-theme-color");
 
                 if (btnTrio && btnWarp) {
-                    btnTrio.classList.toggle("active-trio", appName === "trioche
+                    btnTrio.classList.toggle("active-trio", appName === "triochef");
+                    btnWarp.classList.toggle("active-warp", appName === "warp");
+                }
+
+                if (brandTitle) {
+                    brandTitle.textContent = appName === "triochef" ? "TrioChef" : "Warp Scanner";
+                }
+
+                if (themeMeta) {
+                    themeMeta.setAttribute("content", appName === "triochef" ? "#1C3F3A" : "#070B19");
+                }
+
+                updatePageTitle();
+
+                if (scrollToTop) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+            }
+
+            // Esponi anche globalmente per sicurezza
+            window.setLanguage = setLanguage;
+            window.setApp = setApp;
+
+            // Aggancia tutti gli eventi al caricamento del DOM
+            function initEvents() {
+                const btnIt = document.getElementById("btn-lang-it");
+                const btnEn = document.getElementById("btn-lang-en");
+                const btnTrio = document.getElementById("btn-app-triochef");
+                const btnWarp = document.getElementById("btn-app-warp");
+                const btnOpenWarp = document.getElementById("btn-open-warp-preview");
+                const imgOpenWarp = document.getElementById("img-open-warp-preview");
+                const btnBackTrio = document.getElementById("btn-back-to-triochef");
+                const brandHomeBtn = document.getElementById("brand-home-btn");
+                const warpStoreBtn = document.getElementById("warp-store-btn");
+
+                if (btnIt) btnIt.addEventListener("click", function() { setLanguage("it"); });
+                if (btnEn) btnEn.addEventListener("click", function() { setLanguage("en"); });
+
+                if (btnTrio) btnTrio.addEventListener("click", function() { setApp("triochef", true); });
+                if (btnWarp) btnWarp.addEventListener("click", function() { setApp("warp", true); });
+
+                if (btnOpenWarp) btnOpenWarp.addEventListener("click", function() { setApp("warp", true); });
+                if (imgOpenWarp) imgOpenWarp.addEventListener("click", function() { setApp("warp", true); });
+                if (btnBackTrio) btnBackTrio.addEventListener("click", function() { setApp("triochef", true); });
+                if (brandHomeBtn) brandHomeBtn.addEventListener("click", function() { setApp("triochef", true); });
+
+                if (warpStoreBtn) {
+                    warpStoreBtn.addEventListener("click", function(e) {
+                        if (warpStoreBtn.classList.contains("coming-soon-btn")) {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            }
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", initEvents);
+            } else {
+                initEvents();
+            }
+        })();
+    </script>
+</body>
+</html>
