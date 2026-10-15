@@ -1,729 +1,910 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TrioChef - Svuota il frigo, riempi il piatto | Trittico Lab</title>
-<meta name="description" content="Scopri le app di Trittico Lab: TrioChef (ricette antispreco su misura) e Warp Scanner Doc (scanner PDF veloce e 100% offline).">
-<meta name="theme-color" content="#1C3F3A" id="meta-theme-color">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-/* ==========================================================================
-   DESIGN SYSTEM DINAMICO TRITTICO LAB (TrioChef + Warp Scanner Doc)
-   ========================================================================== */
-:root,
-body[data-app="triochef"] {
---primary-color: #1C3F3A;
---primary-gradient-end: #2A5A53;
---primary-dark: #122926;
---accent-color: #D4A373;
---accent-hover: #E2B486;
---accent-glow: rgba(212, 163, 115, 0.45);
---bg-color: #F6F8F7;
---card-bg: #FFFFFF;
---card-subtle: #EDF2F0;
---text-main: #1A1A1A;
---text-muted: #556260;
---text-on-primary: #FFFFFF;
---text-on-accent: #1A1A1A;
---border-color: rgba(28, 63, 58, 0.1);
---shadow: 0 14px 32px rgba(28, 63, 58, 0.08);
---phone-border: #1A2422;
---radius: 20px;
-}
-
-/* TEMA DARK "WARP SPEED" PER WARP SCANNER DOC */
-body[data-app="warpscanner"] {
---primary-color: #000000;
---primary-gradient-end: #0F172A;
---primary-dark: #050811;
---accent-color: #00E5FF;
---accent-hover: #5CEFFF;
---accent-glow: rgba(0, 229, 255, 0.45);
---bg-color: #070B14;
---card-bg: #0F172A;
---card-subtle: #1E293B;
---text-main: #F8FAFC;
---text-muted: #94A3B8;
---text-on-primary: #FFFFFF;
---text-on-accent: #000000;
---border-color: rgba(0, 229, 255, 0.22);
---shadow: 0 16px 36px rgba(0, 229, 255, 0.08);
---phone-border: #00E5FF;
-}
-
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-html {
-scroll-behavior: smooth;
-}
-
-body {
-background-color: var(--bg-color);
-color: var(--text-main);
-line-height: 1.6;
--webkit-font-smoothing: antialiased;
-transition: background-color 0.35s ease, color 0.35s ease;
-}
-
-/* Visibilita Lingua (IT / EN) */
-body[data-lang="it"] .lang-en { display: none !important; }
-body[data-lang="en"] .lang-it { display: none !important; }
-
-/* Visibilita App (TrioChef / Warp Scanner) */
-body[data-app="triochef"] .app-warp { display: none !important; }
-body[data-app="warpscanner"] .app-trio { display: none !important; }
-
-/* ==========================================================================
-   TOP BAR & HEADER
-   ========================================================================== */
-header {
-background-color: var(--primary-color);
-padding: 0.85rem 5%;
-position: sticky;
-top: 0;
-z-index: 1000;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-transition: background-color 0.35s ease;
-}
-
-.header-container {
-max-width: 1200px;
-margin: 0 auto;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-wrap: wrap;
-gap: 12px;
-}
-
-.logo-container {
-display: flex;
-align-items: center;
-gap: 12px;
-color: var(--text-on-primary);
-font-weight: 800;
-font-size: 1.35rem;
-letter-spacing: -0.5px;
-text-decoration: none;
-}
-
-.app-icon {
-width: 46px;
-height: 46px;
-border-radius: 12px;
-object-fit: cover;
-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-border: 2px solid rgba(255, 255, 255, 0.2);
-background-color: var(--card-bg);
-}
-
-body[data-app="warpscanner"] .app-icon {
-border-color: var(--accent-color);
-box-shadow: 0 0 12px var(--accent-glow);
-}
-
-.nav-controls {
-display: flex;
-align-items: center;
-gap: 10px;
-flex-wrap: wrap;
-}
-
-/* Selettore App (TrioChef / Warp Scanner) */
-.app-switcher {
-background: rgba(255, 255, 255, 0.1);
-padding: 4px;
-border-radius: 30px;
-display: flex;
-gap: 4px;
-border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.app-tab {
-background: transparent;
-border: none;
-color: rgba(255, 255, 255, 0.75);
-padding: 6px 14px;
-border-radius: 20px;
-font-weight: 700;
-font-size: 0.85rem;
-cursor: pointer;
-transition: all 0.25s ease;
-display: flex;
-align-items: center;
-gap: 6px;
-}
-
-.app-tab:hover {
-color: #FFFFFF;
-}
-
-.app-tab.active {
-background: var(--accent-color);
-color: var(--text-on-accent);
-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-/* Selettore Lingua (IT / EN) */
-.lang-switch {
-background: rgba(255, 255, 255, 0.1);
-padding: 4px;
-border-radius: 30px;
-display: flex;
-gap: 2px;
-border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.lang-btn {
-background: transparent;
-border: none;
-color: rgba(255, 255, 255, 0.75);
-padding: 6px 12px;
-border-radius: 20px;
-font-weight: 700;
-font-size: 0.82rem;
-cursor: pointer;
-transition: all 0.25s ease;
-}
-
-.lang-btn.active {
-background: #FFFFFF;
-color: #1A1A1A;
-}
-
-/* ==========================================================================
-   HERO SECTION
-   ========================================================================== */
-.hero {
-background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-gradient-end) 100%);
-color: var(--text-on-primary);
-text-align: center;
-padding: 4.5rem 5% 8rem 5%;
-display: flex;
-flex-direction: column;
-align-items: center;
-position: relative;
-border-bottom: 1px solid var(--border-color);
-}
-
-.hero-badge {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-background: rgba(255, 255, 255, 0.1);
-border: 1px solid var(--border-color);
-color: var(--accent-color);
-padding: 6px 16px;
-border-radius: 30px;
-font-size: 0.85rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-margin-bottom: 1.4rem;
-}
-
-.hero h1 {
-font-size: clamp(2.4rem, 5vw, 4rem);
-font-weight: 900;
-line-height: 1.1;
-margin-bottom: 1.25rem;
-max-width: 880px;
-letter-spacing: -1px;
-}
-
-body[data-app="warpscanner"] .hero h1 {
-text-shadow: 0 0 24px rgba(0, 229, 255, 0.25);
-}
-
-.hero p {
-font-size: clamp(1.1rem, 2vw, 1.25rem);
-opacity: 0.92;
-max-width: 640px;
-margin-bottom: 2.2rem;
-}
-
-.cta-btn {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 12px;
-background-color: var(--accent-color);
-color: var(--text-on-accent);
-text-decoration: none;
-padding: 16px 36px;
-border-radius: 30px;
-font-weight: 800;
-font-size: 1.1rem;
-transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-.cta-btn:hover {
-background-color: var(--accent-hover);
-transform: translateY(-3px);
-box-shadow: 0 10px 25px var(--accent-glow);
-}
-
-.cta-btn svg {
-width: 22px;
-height: 22px;
-fill: currentColor;
-flex-shrink: 0;
-}
-
-/* ==========================================================================
-   MEDIA SHOWCASE (Riquadro FISSO 16:9 identico per IT e EN)
-   ========================================================================== */
-.media-wrapper {
-max-width: 900px;
-margin: -5rem auto 4.5rem auto;
-padding: 0 5%;
-position: relative;
-z-index: 10;
-}
-
-/* Riquadro 16:9 fisso che non cambia mai forma tra IT e EN */
-.video-container {
-position: relative;
-width: 100%;
-padding-bottom: 56.25%;
-height: 0;
-overflow: hidden;
-border-radius: var(--radius);
-box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
-background-color: #000000;
-border: 5px solid var(--card-bg);
-}
-
-body[data-app="warpscanner"] .video-container {
-border-color: var(--accent-color);
-box-shadow: 0 0 35px rgba(0, 229, 255, 0.2);
-}
-
-.video-container iframe {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-border: none;
-}
-
-/* Showcase Banner per Warp Scanner */
-.banner-container {
-width: 100%;
-border-radius: var(--radius);
-overflow: hidden;
-box-shadow: 0 20px 50px rgba(0, 229, 255, 0.18);
-border: 2px solid var(--accent-color);
-background-color: #050811;
-display: flex;
-flex-direction: column;
-}
-
-.banner-img {
-width: 100%;
-height: auto;
-display: block;
-object-fit: cover;
-}
-
-/* ==========================================================================
-   SEZIONE FEATURES E SCREENSHOT REALI UI
-   ========================================================================== */
-.section-title {
-text-align: center;
-max-width: 800px;
-margin: 0 auto 3rem auto;
-padding: 0 5%;
-}
-
-.section-title h2 {
-font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-font-weight: 800;
-color: var(--text-main);
-letter-spacing: -0.5px;
-margin-bottom: 0.6rem;
-}
-
-body[data-app="triochef"] .section-title h2 {
-color: var(--primary-color);
-}
-
-.section-title p {
-color: var(--text-muted);
-font-size: 1.1rem;
-}
-
-.features {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 2rem;
-max-width: 1200px;
-margin: 0 auto 5rem auto;
-padding: 0 5%;
-}
-
-.feature-card {
-background: var(--card-bg);
-border-radius: var(--radius);
-padding: 2rem 1.8rem;
-text-align: center;
-box-shadow: var(--shadow);
-border: 1px solid var(--border-color);
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-
-.feature-card:hover {
-transform: translateY(-8px);
-}
-
-body[data-app="warpscanner"] .feature-card:hover {
-box-shadow: 0 16px 36px rgba(0, 229, 255, 0.15);
-border-color: var(--accent-color);
-}
-
-/* Cornice uniforme per tutti gli screenshot reali dell'app */
-.screenshot-frame {
-width: 100%;
-height: 380px;
-background: var(--card-subtle);
-border-radius: 16px;
-padding: 12px;
-margin-bottom: 1.5rem;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-}
-
-.feature-screenshot {
-max-height: 100%;
-max-width: 100%;
-width: auto;
-height: auto;
-object-fit: contain;
-border-radius: 12px;
-box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-border: 2px solid var(--phone-border);
-}
-
-/* Box Icona Cyber per Warp Scanner */
-.cyber-icon-box {
-width: 80px;
-height: 80px;
-border-radius: 20px;
-background: rgba(0, 229, 255, 0.1);
-border: 1px solid var(--accent-color);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 2.2rem;
-margin-bottom: 1.5rem;
-box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
-}
-
-.feature-card h3 {
-color: var(--text-main);
-font-size: 1.35rem;
-margin-bottom: 0.75rem;
-font-weight: 800;
-}
-
-body[data-app="triochef"] .feature-card h3 {
-color: var(--primary-color);
-}
-
-body[data-app="warpscanner"] .feature-card h3 {
-color: var(--accent-color);
-}
-
-.feature-card p {
-color: var(--text-muted);
-font-size: 0.98rem;
-}
-
-/* ==========================================================================
-   CROSS-PROMOTION BANNER (Passa all'altra app di Trittico Lab)
-   ========================================================================== */
-.cross-promo {
-max-width: 1200px;
-margin: 0 auto 5rem auto;
-padding: 0 5%;
-}
-
-.cross-promo-card {
-background: var(--card-subtle);
-border: 1px solid var(--border-color);
-border-radius: var(--radius);
-padding: 2.2rem 2.5rem;
-display: flex;
-align-items: center;
-justify-content: space-between;
-flex-wrap: wrap;
-gap: 1.5rem;
-}
-
-.cross-promo-info {
-display: flex;
-align-items: center;
-gap: 1.2rem;
-max-width: 700px;
-}
-
-.cross-promo-icon {
-width: 64px;
-height: 64px;
-border-radius: 16px;
-object-fit: cover;
-flex-shrink: 0;
-border: 2px solid var(--accent-color);
-}
-
-.cross-promo-text h4 {
-font-size: 1.2rem;
-font-weight: 800;
-margin-bottom: 0.25rem;
-}
-
-.cross-promo-text p {
-color: var(--text-muted);
-font-size: 0.95rem;
-}
-
-.secondary-btn {
-background: var(--primary-color);
-color: #FFFFFF;
-border: 1px solid var(--accent-color);
-padding: 12px 24px;
-border-radius: 30px;
-font-weight: 700;
-font-size: 0.95rem;
-cursor: pointer;
-transition: all 0.25s ease;
-}
-
-.secondary-btn:hover {
-background: var(--accent-color);
-color: var(--text-on-accent);
-}
-
-/* ==========================================================================
-   FOOTER
-   ========================================================================== */
-footer {
-background-color: var(--primary-dark);
-color: var(--text-on-primary);
-text-align: center;
-padding: 3.5rem 5% 2.5rem 5%;
-border-top: 1px solid var(--border-color);
-}
-
-.footer-brand {
-display: inline-flex;
-align-items: center;
-gap: 10px;
-font-weight: 800;
-font-size: 1.25rem;
-margin-bottom: 1.2rem;
-opacity: 0.95;
-}
-
-.footer-brand img {
-width: 34px;
-height: 34px;
-border-radius: 8px;
-object-fit: cover;
-}
-
-.footer-links {
-display: flex;
-justify-content: center;
-flex-wrap: wrap;
-gap: 2rem;
-margin-bottom: 1.8rem;
-}
-
-.footer-links a {
-color: var(--accent-color);
-text-decoration: none;
-font-weight: 600;
-transition: opacity 0.2s;
-}
-
-.footer-links a:hover {
-opacity: 0.8;
-text-decoration: underline;
-}
-
-.footer-copy {
-opacity: 0.6;
-font-size: 0.88rem;
-}
-
-@media (max-width: 720px) {
-.header-container {
-flex-direction: column;
-align-items: stretch;
-text-align: center;
-}
-.logo-container {
-justify-content: center;
-}
-.nav-controls {
-justify-content: center;
-}
-.cross-promo-card {
-flex-direction: column;
-text-align: center;
-}
-.cross-promo-info {
-flex-direction: column;
-}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrioChef - Svuota il frigo, riempi il piatto</title>
+    <meta name="description" content="Inserisci 3 ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.">
+    <meta name="theme-color" content="#1C3F3A">
+
+    <!-- Open Graph / Social -->
+    <meta property="og:title" content="TrioChef - Cucina Antispreco su Misura">
+    <meta property="og:description" content="Inserisci 3 ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.">
+    <meta property="og:image" content="20260921_192306_0000.png">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="20260921_192306_0000.png">
+    <link rel="apple-touch-icon" href="20260921_192306_0000.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           VARIABILI CSS (:root) - ARCHITETTURA TRITTICO LAB (TRIOCHEF & WARP SCANNER)
+           ========================================================================== */
+        :root {
+            /* Palette TrioChef */
+            --primary-color: #1C3F3A;
+            --primary-light: #2A5A53;
+            --secondary-color: #D4A373;
+            --secondary-hover: #C68F59;
+            --logo-cream: #F2DEC4;
+            --bg-color: #F7F5F0;
+            --card-bg: #FFFFFF;
+            --text-dark: #1A2421;
+            --text-muted: #5A6B65;
+            --text-light: #FFFFFF;
+
+            /* Palette Warp Scanner Doc */
+            --warp-bg: #070B19;
+            --warp-bg-grad: #101F42;
+            --warp-cyan: #00E5FF;
+            --warp-amber: #F59E0B;
+
+            /* Layout & Elevazione */
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --radius-pill: 999px;
+            --shadow: 0 14px 32px rgba(28, 63, 58, 0.08);
+            --shadow-hover: 0 22px 44px rgba(28, 63, 58, 0.14);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .heading-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Gestione Bilingue Nativa */
+        body[data-lang="it"] .lang-en { display: none !important; }
+        body[data-lang="en"] .lang-it { display: none !important; }
+
+        /* ==========================================================================
+           HEADER & NAVIGAZIONE ECOSISTEMA TRITTICO LAB
+           ========================================================================== */
+        header {
+            background-color: rgba(28, 63, 58, 0.96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.85rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 1rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.45rem;
+            letter-spacing: -0.5px;
+        }
+
+        .app-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            object-fit: cover;
+            background-color: var(--logo-cream);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(212, 163, 115, 0.6);
+            transition: var(--transition);
+        }
+
+        .logo-container:hover .app-icon {
+            transform: scale(1.05);
+        }
+
+        .nav-apps {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-pill {
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            transition: var(--transition);
+        }
+
+        .nav-pill.active-app {
+            background: rgba(212, 163, 115, 0.2);
+            color: var(--secondary-color);
+            border: 1px solid rgba(212, 163, 115, 0.4);
+        }
+
+        .nav-pill.warp-link {
+            background: rgba(0, 229, 255, 0.1);
+            color: #A5F3FC;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .nav-pill.warp-link:hover {
+            background: rgba(0, 229, 255, 0.2);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        .nav-soon-tag {
+            background: rgba(245, 158, 11, 0.25);
+            color: #FCD34D;
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: var(--radius-pill);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Selettore Lingua */
+        .lang-switch {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 4px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            gap: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            flex-shrink: 0;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 42px;
+        }
+
+        .lang-btn.active {
+            background: var(--secondary-color);
+            color: #1A1A1A;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ==========================================================================
+           HERO SECTION
+           ========================================================================== */
+        .hero {
+            background: radial-gradient(circle at 50% 15%, var(--primary-light) 0%, var(--primary-color) 75%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 4.5rem 5% 8rem 5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 7px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.6rem;
+            backdrop-filter: blur(6px);
+        }
+
+        .hero-logo-showcase {
+            width: 88px;
+            height: 88px;
+            border-radius: 22px;
+            object-fit: cover;
+            background-color: var(--logo-cream);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 5.2vw, 4rem);
+            font-weight: 800;
+            line-height: 1.12;
+            margin-bottom: 1.3rem;
+            max-width: 850px;
+        }
+
+        .hero h1 span.accent {
+            color: var(--secondary-color);
+        }
+
+        .hero p {
+            font-size: clamp(1.08rem, 2vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.92);
+            max-width: 630px;
+            margin-bottom: 2.4rem;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background-color: var(--secondary-color);
+            color: #1A1A1A;
+            text-decoration: none;
+            padding: 16px 36px;
+            border-radius: var(--radius-pill);
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+            transition: var(--transition);
+        }
+
+        .cta-btn:hover {
+            background-color: var(--secondary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(212, 163, 115, 0.4);
+        }
+
+        .cta-btn svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        /* ==========================================================================
+           SEZIONE VIDEO ADATTIVA (16:9 IT Landscape vs 9:16 EN Short Verticale)
+           ========================================================================== */
+        .video-section {
+            padding: 0 5%;
+            margin-top: -5rem;
+            margin-bottom: 5rem;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            transition: max-width 0.35s ease;
+        }
+
+        /* Video Italiano: Widescreen 16:9 */
+        body[data-lang="it"] .video-wrapper {
+            max-width: 860px;
+        }
+
+        body[data-lang="it"] .video-container {
+            aspect-ratio: 16 / 9;
+            border-radius: var(--radius-lg);
+            border: 5px solid var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+
+        /* Video Inglese: YouTube Short Verticale 9:16 */
+        body[data-lang="en"] .video-wrapper {
+            max-width: 350px;
+        }
+
+        body[data-lang="en"] .video-container {
+            aspect-ratio: 9 / 16;
+            border-radius: 36px;
+            border: 8px solid #1A2421;
+            box-shadow: 0 24px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ==========================================================================
+           SEZIONE ESPERIENZA REALE (4 CARD + 4 SCREENSHOT DEL REPOSITORY)
+           ========================================================================== */
+        .experience-section {
+            max-width: 1240px;
+            margin: 0 auto 6rem auto;
+            padding: 0 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 3.5rem auto;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+            color: var(--primary-color);
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+            gap: 2rem;
+            align-items: stretch;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.6rem 2.2rem 1.6rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(28, 63, 58, 0.06);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .screenshot-frame {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(180deg, #F4EFE6 0%, #EAE3D5 100%);
+            padding: 14px 10px 0 10px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .feature-screenshot {
+            width: auto;
+            max-width: 100%;
+            height: 360px;
+            object-fit: contain;
+            border-radius: 14px 14px 0 0;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+            font-weight: 800;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        /* ==========================================================================
+           SEZIONE CROSS-PROMO: WARP SCANNER DOC (COMING SOON / PRONTA AL LANCIO)
+           ========================================================================== */
+        .warp-promo-section {
+            max-width: 1140px;
+            margin: 0 auto 5.5rem auto;
+            padding: 0 5%;
+        }
+
+        .warp-card {
+            background: linear-gradient(135deg, var(--warp-bg) 0%, var(--warp-bg-grad) 100%);
+            border-radius: var(--radius-lg);
+            padding: 2.8rem;
+            color: #FFFFFF;
+            box-shadow: 0 20px 45px rgba(7, 11, 25, 0.25);
+            border: 1px solid rgba(0, 229, 255, 0.28);
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .warp-badges-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.1rem;
+        }
+
+        .warp-badge {
+            display: inline-block;
+            background: rgba(0, 229, 255, 0.14);
+            color: var(--warp-cyan);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 13px;
+            border-radius: var(--radius-pill);
+        }
+
+        .warp-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #FCD34D;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--warp-amber);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--warp-amber);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(1.25); }
+        }
+
+        .warp-content h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 800;
+            margin-bottom: 0.9rem;
+            line-height: 1.2;
+        }
+
+        .warp-content p {
+            color: rgba(255, 255, 255, 0.84);
+            font-size: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .warp-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.8rem;
+        }
+
+        .warp-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #E2E8F0;
+        }
+
+        /* Pulsante CTA Warp Scanner (Supporta sia stato Coming Soon che stato Attivo) */
+        .warp-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--warp-cyan);
+            color: #070B19;
+            text-decoration: none;
+            padding: 13px 28px;
+            border-radius: var(--radius-pill);
+            font-weight: 800;
+            font-size: 0.98rem;
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(0, 229, 255, 0.25);
+        }
+
+        .warp-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(0, 229, 255, 0.4);
+        }
+
+        /* Stile specifico quando è in modalità "Coming Soon" */
+        .warp-cta-btn.coming-soon-state {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.88);
+            border: 1px dashed rgba(0, 229, 255, 0.45);
+            box-shadow: none;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .warp-cta-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .warp-banner-wrap {
+            position: relative;
+        }
+
+        .warp-banner-img {
+            width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            display: block;
+        }
+
+        /* ==========================================================================
+           FOOTER
+           ========================================================================== */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            text-align: center;
+            padding: 4rem 5% 2.5rem 5%;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-light);
+            font-weight: 800;
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background-color: var(--logo-cream);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 1.2rem 0 2rem 0;
+        }
+
+        .footer-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.85;
+            text-decoration: underline;
+        }
+
+        .footer-copy {
+            opacity: 0.65;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ==========================================================================
+           OTTIMIZZAZIONE MOBILE
+           ========================================================================== */
+        @media (max-width: 860px) {
+            .warp-card {
+                grid-template-columns: 1fr;
+                padding: 2.2rem 1.6rem;
+                text-align: center;
+            }
+            .warp-badges-row,
+            .warp-pills {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0.75rem 4%;
+            }
+            .nav-pill.active-app {
+                display: none;
+            }
+            .logo-container {
+                font-size: 1.25rem;
+            }
+            .app-icon {
+                width: 40px;
+                height: 40px;
+            }
+            .hero {
+                padding: 3.5rem 5% 6.5rem 5%;
+            }
+            .hero-logo-showcase {
+                width: 74px;
+                height: 74px;
+            }
+            .video-section {
+                margin-top: -3.8rem;
+            }
+            body[data-lang="en"] .video-wrapper {
+                max-width: 300px;
+            }
+            .feature-screenshot {
+                height: 320px;
+            }
+        }
+    </style>
 </head>
-<body data-lang="it" data-app="triochef">
+<body data-lang="it">
 
-<!-- HEADER CON SWITCH APP E LINGUA -->
-<header>
-<div class="header-container">
-<!-- Logo TrioChef -->
-<a href="#triochef" class="logo-container app-trio" onclick="setApp('triochef')">
-<img src="20260921_192306_0000.png" data-fallback="TrioChef/20260921_192306_0000.png" alt="TrioChef Logo" class="app-icon" onerror="handleImgError(this)">
-<span>TrioChef</span>
-</a>
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <a href="#" class="logo-container">
+                <img src="20260921_192306_0000.png" onerror="this.src='Take a look at my Canva design!.jpg'" alt="TrioChef Logo" class="app-icon">
+                <span>TrioChef</span>
+            </a>
+            <nav class="nav-apps" aria-label="Prodotti Trittico Lab">
+                <a href="#" class="nav-pill active-app">🥗 TrioChef</a>
+                <a href="#warp-scanner" class="nav-pill warp-link">
+                    <span>⚡ Warp Scanner Doc</span>
+                    <span class="nav-soon-tag">SOON</span>
+                </a>
+            </nav>
+        </div>
 
-<!-- Logo Warp Scanner Doc -->
-<a href="#warpscanner" class="logo-container app-warp" onclick="setApp('warpscanner')">
-<img src="Take a look at my Canva design!.jpg" data-fallback="Warpscanner/Take a look at my Canva design!.jpg" alt="Warp Scanner Logo" class="app-icon" onerror="handleImgError(this)">
-<span>Warp Scanner Doc</span>
-</a>
+        <div class="lang-switch" role="group" aria-label="Selettore lingua">
+            <button class="lang-btn active" onclick="setLanguage('it')" id="btn-it">IT</button>
+            <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+        </div>
+    </header>
 
-<div class="nav-controls">
-<!-- Switcher tra le 2 App di Trittico Lab -->
-<div class="app-switcher" role="tablist" aria-label="Trittico Lab Apps">
-<button type="button" class="app-tab active" id="tab-triochef" onclick="setApp('triochef')">
-<span>👨‍🍳</span> TrioChef
-</button>
-<button type="button" class="app-tab" id="tab-warpscanner" onclick="setApp('warpscanner')">
-<span>⚡</span> Warp Scanner
-</button>
-</div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>🥗</span>
+            <span class="lang-it">Cucina Antispreco su Misura</span>
+            <span class="lang-en">Custom Zero-Waste Cooking</span>
+        </div>
 
-<!-- Switcher Lingua IT / EN -->
-<div class="lang-switch" role="group" aria-label="Language">
-<button type="button" class="lang-btn active" id="btn-it" onclick="setLanguage('it')">IT</button>
-<button type="button" class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
-</div>
-</div>
-</div>
-</header>
+        <img src="20260921_192306_0000.png" onerror="this.src='Take a look at my Canva design!.jpg'" alt="Icona TrioChef" class="hero-logo-showcase">
 
-<!-- ==========================================================================
-     CONTENUTO APP 1: TRIOCHEF
-     ========================================================================== -->
-<main class="app-trio">
-<section class="hero">
-<div class="hero-badge">
-<span>🥗</span>
-<span class="lang-it">Cucina Antispreco su Misura</span>
-<span class="lang-en">Custom Zero-Waste Cooking</span>
-</div>
+        <h1 class="lang-it">Svuota il frigo,<br><span class="accent">riempi il piatto.</span></h1>
+        <h1 class="lang-en">Empty your fridge,<br><span class="accent">fill your plate.</span></h1>
 
-<h1 class="lang-it">Svuota il frigo,<br>riempi il piatto.</h1>
-<h1 class="lang-en">Empty your fridge,<br>fill your plate.</h1>
+        <p class="lang-it">Inserisci 3 ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.</p>
+        <p class="lang-en">Enter 3 ingredients you have at home. TrioChef creates the perfect custom recipe for you, with zero waste and in seconds.</p>
 
-<p class="lang-it">Inserisci 3 ingredienti che hai in casa. TrioChef crea la ricetta perfetta su misura per te, senza sprechi e in pochi secondi.</p>
-<p class="lang-en">Enter 3 ingredients you have at home. TrioChef creates the perfect custom recipe for you, with zero waste and in seconds.</p>
+        <a href="https://play.google.com/store/apps/details?id=com.triochef.app" class="cta-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 512 512" aria-hidden="true">
+                <path fill="currentColor" d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+            </svg>
+            <span class="lang-it">Scarica da Google Play</span>
+            <span class="lang-en">Download on Google Play</span>
+        </a>
+    </section>
 
-<a href="https://play.google.com/store/apps/details?id=com.triochef.app" class="cta-btn" target="_blank" rel="noopener noreferrer">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
-</svg>
-<span class="lang-it">Scarica da Google Play</span>
-<span class="lang-en">Download on Google Play</span>
-</a>
-</section>
+    <!-- VIDEO SECTION (16:9 per IT, 9:16 Short per EN) -->
+    <div class="video-section">
+        <div class="video-wrapper">
+            <div class="video-container">
+                <iframe 
+                    id="promo-video" 
+                    src="https://www.youtube.com/embed/9jtb9HUG3mI" 
+                    title="TrioChef Video Promozionale"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
 
-<!-- Video Player Fisso 16:9 (Non cambia dimensione tra IT e EN) -->
-<div class="media-wrapper">
-<div class="video-container">
-<iframe id="promo-video" src="https://www.youtube.com/embed/9jtb9HUG3mI" title="TrioChef Promo Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-</div>
+    <!-- SEZIONE ESPERIENZA REALE DENTRO TRIOCHEF (4 CARD) -->
+    <section class="experience-section">
+        <div class="section-header">
+            <h2 class="lang-it">L'esperienza reale dentro TrioChef</h2>
+            <h2 class="lang-en">The real experience inside TrioChef</h2>
+            <p class="lang-it">Dagli ingredienti in dispensa alla lista della spesa, tutto a portata di mano.</p>
+            <p class="lang-en">From pantry ingredients to your shopping list, everything at your fingertips.</p>
+        </div>
 
-<div class="section-title">
-<h2 class="lang-it">L'esperienza reale dentro TrioChef</h2>
-<h2 class="lang-en">The real experience inside TrioChef</h2>
-<p class="lang-it">Dagli ingredienti in dispensa alla lista della spesa, tutto a portata di mano.</p>
-<p class="lang-en">From pantry ingredients to your shopping list, everything at your fingertips.</p>
-</div>
+        <div class="features-grid">
+            <!-- Card 1: Zero Sprechi -->
+            <div class="feature-card">
+                <div class="screenshot-frame">
+                    <img src="Screenshot_20260921_223124_TrioChef.jpg" alt="Zero Sprechi - 3 Ingredienti" class="feature-screenshot" loading="lazy">
+                </div>
+                <h3 class="lang-it">Zero Sprechi</h3>
+                <h3 class="lang-en">Zero Waste</h3>
+                <p class="lang-it">Inserisci i 3 ingredienti principali, scegli il pasto, la dieta, il tempo massimo e le porzioni. TrioChef crea subito il piatto ideale.</p>
+                <p class="lang-en">Enter your 3 main ingredients, choose meal type, diet, max time, and servings. TrioChef immediately crafts the ideal dish.</p>
+            </div>
 
-<!-- 4 Feature Cards con i veri Screenshot UI -->
-<section class="features">
-<!-- Card 1: 3 Ingredienti & Zero Sprechi -->
-<div class="feature-card">
-<div class="screenshot-frame">
-<img src="Screenshot_20260921_223124_TrioChef.jpg" data-fallback="TrioChef/Screenshot_20260921_223124_TrioChef.jpg" alt="Inserisci 3 ingredienti su TrioChef" class="feature-screenshot" onerror="handleImgError(this)">
-</div>
-<h3 class="lang-it">Zero Sprechi</h3>
-<h3 class="lang-en">Zero Waste</h3>
-<p class="lang-it">Inserisci i 3 ingredienti principali, scegli il pasto, la dieta, il tempo massimo e le porzioni. TrioChef crea subito il piatto ideale.</p>
-<p class="lang-en">Enter your 3 main ingredients, choose meal type, diet, max time, and servings. TrioChef immediately crafts the ideal dish.</p>
-</div>
+            <!-- Card 2: Adatta la Ricetta -->
+            <div class="feature-card">
+                <div class="screenshot-frame">
+                    <img src="Screenshot_20260921_223414_TrioChef.jpg" alt="Adatta la Ricetta" class="feature-screenshot" loading="lazy">
+                </div>
+                <h3 class="lang-it">Adatta la Ricetta</h3>
+                <h3 class="lang-en">Adapt the Recipe</h3>
+                <p class="lang-it">Ti manca un ingrediente o vuoi una variante? Tocca "Adatta la ricetta" e TrioChef ricalcola istantaneamente dosi e passaggi.</p>
+                <p class="lang-en">Missing an ingredient or want a variation? Tap "Adapt recipe" and TrioChef instantly recalculates amounts and steps.</p>
+            </div>
 
-<!-- Card 2: Adatta la Ricetta -->
-<div class="feature-card">
-<div class="screenshot-frame">
-<img src="Screenshot_20260921_223414_TrioChef.jpg" data-fallback="TrioChef/Screenshot_20260921_223414_TrioChef.jpg" alt="Adatta la ricetta su TrioChef" class="feature-screenshot" onerror="handleImgError(this)">
-</div>
-<h3 class="lang-it">Adatta la Ricetta</h3>
-<h3 class="lang-en">Adapt the Recipe</h3>
-<p class="lang-it">Ti manca un ingrediente o vuoi una variante? Tocca "Adatta la ricetta" e TrioChef ricalcola istantaneamente dosi e passaggi.</p>
-<p class="lang-en">Missing an ingredient or want a variation? Tap "Adapt recipe" and TrioChef instantly recalculates amounts and steps.</p>
-</div>
+            <!-- Card 3: Lista Spesa & Ricettario -->
+            <div class="feature-card">
+                <div class="screenshot-frame">
+                    <img src="Screenshot_20260921_225151_TrioChef.jpg" alt="Lista Spesa e Ricettario" class="feature-screenshot" loading="lazy">
+                </div>
+                <h3 class="lang-it">Lista Spesa &amp; Ricettario</h3>
+                <h3 class="lang-en">Shopping List &amp; Cookbook</h3>
+                <p class="lang-it">Salva le tue ricette del cuore nel ricettario personale e aggiungi gli ingredienti mancanti direttamente nella Lista della Spesa.</p>
+                <p class="lang-en">Save your favorite recipes in your personal cookbook and add any missing ingredients straight to your Shopping List.</p>
+            </div>
 
-<!-- Card 3: Ricettario & Lista della Spesa -->
-<div class="feature-card">
-<div class="screenshot-frame">
-<img src="Screenshot_20260921_225151_TrioChef.jpg" data-fallback="TrioChef/Screenshot_20260921_225151_TrioChef.jpg" alt="Lista della spesa su TrioChef" class="feature-screenshot" onerror="handleImgError(this)">
-</div>
-<h3 class="lang-it">Lista Spesa &amp; Ricettario</h3>
-<h3 class="lang-en">Shopping List &amp; Cookbook</h3>
-<p class="lang-it">Salva le tue ricette del cuore nel ricettario personale e aggiungi gli ingredienti mancanti direttamente nella Lista della Spesa.</p>
-<p class="lang-en">Save your favorite recipes in your personal cookbook and add any missing ingredients straight to your Shopping List.</p>
-</div>
+            <!-- Card 4: Sempre con te (IT / EN) -->
+            <div class="feature-card">
+                <div class="screenshot-frame">
+                    <img src="Screenshot_20260921_224913_TrioChef.jpg" alt="Sempre con te Bilingue IT EN" class="feature-screenshot" loading="lazy">
+                </div>
+                <h3 class="lang-it">Sempre con te (IT / EN)</h3>
+                <h3 class="lang-en">Always with you (IT / EN)</h3>
+                <p class="lang-it">Passa dall'Italiano all'Inglese con un semplice tocco in qualsiasi momento, anche sulle ricette che hai già salvato.</p>
+                <p class="lang-en">Switch between Italian and English with a single tap anytime, even on the recipes you have already saved.</p>
+            </div>
+        </div>
+    </section>
 
-<!-- Card 4: Bilingue IT/EN -->
-<div class="feature-card">
-<div class="screenshot-frame">
-<img src="Screenshot_20260921_224913_TrioChef.jpg" data-fallback="TrioChef/Screenshot_20260921_224913_TrioChef.jpg" alt="TrioChef in Italiano e Inglese" class="feature-screenshot" onerror="handleImgError(this)">
-</div>
-<h3 class="lang-it">Sempre con te (IT / EN)</h3>
-<h3 class="lang-en">Always with you (IT / EN)</h3>
-<p class="lang-it">Passa dall'Italiano all'Inglese con un semplice tocco in qualsiasi momento, anche sulle ricette che hai già salvato.</p>
-<p class="lang-en">Switch between Italian and English with a single tap anytime, even on the recipes you have already saved.</p>
-</div>
-</section>
+    <!-- SEZIONE WARP SCANNER DOC (MODALITÀ COMING SOON / BETA TESTING) -->
+    <section class="warp-promo-section" id="warp-scanner">
+        <div class="warp-card">
+            <div class="warp-content">
+                <div class="warp-badges-row">
+                    <span class="warp-badge">Trittico Lab Ecosystem</span>
+                    <!-- Al lancio ufficiale puoi rimuovere o nascondere questo badge di stato -->
+                    <span class="warp-status-badge">
+                        <span class="pulse-dot"></span>
+                        <span class="lang-it">In Arrivo &bull; In Beta Testing</span>
+                        <span class="lang-en">Coming Soon &bull; In Beta Testing</span>
+                    </span>
+                </div>
 
-<!-- Cross-Promo verso Warp Scanner -->
-<section class="cross-promo">
-<div class="cross-promo-card">
-<div class="cross-promo-info">
-<img src="Take a look at my Canva design!.jpg" data-fallback="Warpscanner/Take a look at my Canva design!.jpg" alt="Warp Scanner Icon" class="cross-promo-icon" onerror="handleImgError(this)">
-<div class="cross-promo-text">
-<h4 class="lang-it">Scopri anche Warp Scanner Doc di Trittico Lab</h4>
-<h4 class="lang-en">Also
+                <h2 class="lang-it">Scopri anche Warp Scanner Doc di Trittico Lab</h2>
+                <h2 class="lang-en">Also discover Warp Scanner Doc by Trittico Lab</h2>
+
+                <p class="lang-it">Scansioni PDF nitide in 5 secondi. Zero account obbligatori, funzionamento 100% locale sul tuo dispositivo e massima tutela della tua privacy.</p>
+                <p class="lang-en">Crisp PDF scans in 5 seconds. Zero accounts required, 100% local processing on your device, and complete privacy protection.</p>
+
+                <div class="warp-pills">
+                    <span class="warp-pill">⚡ Fast PDF • 5 Seconds</span>
+                    <span class="warp-pill">🔒 100% Offline &amp; Private</span>
+                    <span class="warp-pill">🚫 Zero Login</span>
+                </div>
+
+                <!-- =================================================================
+                     GUIDA AL LANCIO WARP SCANNER DOC:
+                     Quando l'app esce dalla Beta ed è pubblica su Google Play:
+                     1. Sostituisci href="#" con il link Google Play dell'app
+                     2. Rimuovi la classe "coming-soon-state" qui sotto
+                     3. Cambia il testo da "Presto disponibile..." a "Scarica da Google Play"
+                     ================================================================= -->
+                <a href="#" class="warp-cta-btn coming-soon-state" target="_blank" rel="noopener" aria-disabled="true">
+                    <svg viewBox="0 0 512 512" aria-hidden="true">
+                        <path fill="currentColor" d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+                    </svg>
+                    <span class="lang-it">Presto disponibile su Google Play</span>
+                    <span class="lang-en">Coming Soon on Google Play</span>
+                </a>
+            </div>
+
+            <div class="warp-banner-wrap">
+                <img src="warpscanner_banner.jpeg" alt="Warp Scanner Doc Banner" class="warp-banner-img" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+            <img src="20260921_192306_0000.png" onerror="this.src='Take a look at my Canva design!.jpg'" alt="TrioChef Logo">
+            <span>TrioChef</span>
+        </div>
+        <div class="footer-links">
+            <a href="https://play.google.com/store/apps/details?id=com.triochef.app" target="_blank" rel="noopener">Google Play</a>
+            <a href="https://tritticolab.github.io/Privacy.html">Privacy Policy</a>
+            <a href="mailto:tritticolab@gmail.com">
+                <span class="lang-it">Contattaci</span>
+                <span class="lang-en">Contact Us</span>
+            </a>
+        </div>
+        <p class="footer-copy">
+            <span class="lang-it">&copy; 2026 Trittico Lab. Tutti i diritti riservati.</span>
+            <span class="lang-en">&copy; 2026 Trittico Lab. All rights reserved.</span>
+        </p>
+    </footer>
+
+    <!-- LOGICA BILINGUE & SWITCH VIDEO -->
+    <script>
+        const videoIT = "https://www.youtube.com/embed/9jtb9HUG3mI";
+        const videoEN = "https://www.youtube.com/embed/MHUPQQOgyMw";
+
+        function setLanguage(lang) {
+            document.body.setAttribute('data-lang', lang);
+            document.documentElement.lang = lang;
+
+            document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+            const videoPlayer = document.getElementById('promo-video');
+            const targetSrc = lang === 'it' ? videoIT : videoEN;
+            if (videoPlayer.src !== targetSrc) {
+                videoPlayer.src = targetSrc;
+            }
+
+            document.title = lang === 'it'
+                ? "TrioChef - Svuota il frigo, riempi il piatto"
+                : "TrioChef - Empty your fridge, fill your plate";
+        }
+    </script>
+</body>
+</html>
